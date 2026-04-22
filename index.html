@@ -8,17 +8,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* Paleta Dark Premium (Alto Contraste e Elegância) */
+        /* Paleta Dark Premium */
         :root {
-            --bg-deep-black: #030305; /* Fundo principal super escuro */
-            --bg-card: #0A0A0E; /* Fundo dos cards */
+            --bg-deep-black: #030305;
+            --bg-card: #0A0A0E;
             --bg-card-hover: #12121A;
-            --tajo-blue: #0056D2; /* Azul royal da logo */
-            --tajo-cyan: #0088FF; /* Azul mais claro para destaques */
-            --text-main: #E2E8F0; /* Texto principal (prata/branco suave para não cansar a vista) */
-            --text-muted: #94A3B8; /* Texto secundário (cinza escuro) */
+            --tajo-blue: #0056D2;
+            --tajo-cyan: #0088FF;
+            --text-main: #E2E8F0;
+            --text-muted: #94A3B8;
             --border-color: rgba(255, 255, 255, 0.08);
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
         }
 
         * {
@@ -47,9 +47,9 @@
             padding: 0 6%;
         }
 
-        /* --- Cabeçalho (Header) --- */
+        /* --- Cabeçalho --- */
         header {
-            background: rgba(3, 3, 5, 0.9);
+            background: rgba(3, 3, 5, 0.8);
             backdrop-filter: blur(15px);
             position: fixed;
             width: 100%;
@@ -57,7 +57,6 @@
             z-index: 1000;
             border-bottom: 1px solid var(--border-color);
             padding: 20px 0;
-            transition: var(--transition);
         }
 
         .nav-container {
@@ -66,14 +65,9 @@
             align-items: center;
         }
 
-        .logo-img {
-            height: 65px;
-        }
+        .logo-img { height: 65px; }
 
-        nav {
-            display: flex;
-            gap: 35px;
-        }
+        nav { display: flex; gap: 35px; }
 
         nav a {
             text-decoration: none;
@@ -85,9 +79,7 @@
             transition: var(--transition);
         }
 
-        nav a:hover {
-            color: var(--tajo-cyan);
-        }
+        nav a:hover { color: var(--tajo-cyan); }
 
         .btn-primary {
             background: var(--tajo-blue);
@@ -113,121 +105,63 @@
             transform: translateY(-2px);
         }
 
-        /* --- Espaçamento Padrão de Seções --- */
-        section {
-            padding: 120px 0;
-        }
+        /* --- Estrutura de Seções --- */
+        section { padding: 120px 0; transition: var(--transition); }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 70px;
-        }
+        .section-header { text-align: center; margin-bottom: 70px; }
+        .section-header h2 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; }
+        .section-header p { color: var(--text-muted); font-size: 1.15rem; max-width: 700px; margin: 0 auto; }
+        .highlight { color: var(--tajo-cyan); }
 
-        .section-header h2 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
-
-        .section-header p {
-            color: var(--text-muted);
-            font-size: 1.15rem;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .highlight {
-            color: var(--tajo-cyan);
-        }
-
-        /* --- Seção Hero (Início) --- */
+        /* --- Hero Section --- */
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
             padding-top: 100px;
-            background: radial-gradient(circle at top right, rgba(0, 86, 210, 0.15), transparent 40%),
-                        radial-gradient(circle at bottom left, rgba(0, 136, 255, 0.05), transparent 40%);
+            background: radial-gradient(circle at top right, rgba(0, 86, 210, 0.15), transparent 40%);
         }
 
-        .hero-content {
-            max-width: 900px;
-            text-align: left;
-        }
+        .hero h1 { font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 900; margin-bottom: 30px; }
 
-        .hero h1 {
-            font-size: clamp(3.5rem, 6vw, 5.5rem);
-            font-weight: 900;
-            line-height: 1.05;
-            margin-bottom: 30px;
-            letter-spacing: -2px;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            color: var(--text-muted);
-            margin-bottom: 50px;
-            font-weight: 400;
-            max-width: 700px;
-        }
-
-        /* --- Seção Quem Somos --- */
+        /* --- Seção Quem Somos (Com Efeito de Desfoque e Aproximação) --- */
         .about {
             background-color: var(--bg-card);
             border-top: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
         }
 
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: center;
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+        /* Lógica do efeito nos Pilares */
+        .pillars-grid:hover .pillar-card {
+            filter: blur(4px);
+            opacity: 0.5;
+            transform: scale(0.95);
         }
 
-        .about-text h3 {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            font-weight: 800;
-        }
-
-        .about-text p {
-            margin-bottom: 25px;
-            font-size: 1.1rem;
-            color: var(--text-muted);
-        }
-
-        .pillars-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
+        .pillars-grid .pillar-card:hover {
+            filter: blur(0);
+            opacity: 1;
+            transform: scale(1.05); /* Aproxima o retângulo */
+            border-color: var(--tajo-cyan);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            z-index: 10;
         }
 
         .pillar-card {
             background: var(--bg-deep-black);
             padding: 35px;
-            border-left: 4px solid var(--tajo-blue);
             border-radius: 4px 8px 8px 4px;
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--tajo-blue);
+            transition: var(--transition); /* Suaviza o efeito */
         }
 
-        .pillar-card h4 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .pillar-card h4 { font-size: 1.4rem; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; }
 
-        /* --- Seção Serviços --- */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-        }
+        /* --- Serviços --- */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
 
         .service-card {
             background: var(--bg-card);
@@ -237,37 +171,26 @@
             transition: var(--transition);
         }
 
-        .service-card:hover {
-            transform: translateY(-8px);
-            background: var(--bg-card-hover);
+        /* Efeito de aproximação suave nos serviços também */
+        .services-grid:hover .service-card { filter: blur(2px); opacity: 0.7; }
+        .services-grid .service-card:hover { 
+            filter: blur(0); 
+            opacity: 1; 
+            transform: translateY(-10px) scale(1.02);
             border-color: var(--tajo-blue);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .service-icon {
-            font-size: 2.5rem;
-            margin-bottom: 25px;
+        .service-icon { 
+            font-size: 2.5rem; 
+            margin-bottom: 25px; 
             background: -webkit-linear-gradient(45deg, var(--tajo-blue), var(--tajo-cyan));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .service-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        /* --- Seção Portfólio / Projetos --- */
-        .portfolio {
-            background-color: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
+        /* --- Portfólio --- */
+        .portfolio { background-color: var(--bg-card); border-top: 1px solid var(--border-color); }
+        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
 
         .portfolio-item {
             background: var(--bg-deep-black);
@@ -277,102 +200,31 @@
             transition: var(--transition);
         }
 
-        .portfolio-item:hover {
+        .portfolio-item:hover { 
+            transform: scale(1.03);
             border-color: var(--tajo-cyan);
+            box-shadow: 0 0 30px rgba(0, 136, 255, 0.1);
         }
 
-        .portfolio-item h4 {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            color: var(--tajo-cyan);
-        }
-
-        /* --- Seção Metodologia --- */
-        .methodology-grid {
-            display: flex;
-            justify-content: space-between;
-            gap: 30px;
-            position: relative;
-        }
-
-        .step-card {
-            flex: 1;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
+        /* --- Metodologia --- */
+        .methodology-grid { display: flex; justify-content: space-between; gap: 30px; }
+        .step-card { flex: 1; text-align: center; padding: 40px 20px; transition: var(--transition); }
+        .step-card:hover { transform: translateY(-5px); }
         .step-number {
-            width: 70px;
-            height: 70px;
-            background: var(--bg-card);
-            border: 2px solid var(--tajo-blue);
-            color: var(--tajo-cyan);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            margin: 0 auto 25px auto;
+            width: 70px; height: 70px; background: var(--bg-card); border: 2px solid var(--tajo-blue);
+            color: var(--tajo-cyan); border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 2rem; font-weight: 800; margin: 0 auto 25px auto;
         }
 
-        /* --- CTA / Contato --- */
-        .cta-section {
-            text-align: center;
-            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-deep-black) 100%);
-            border-top: 1px solid var(--border-color);
-            padding: 150px 0;
-        }
+        /* --- CTA / Rodapé --- */
+        .cta-section { text-align: center; padding: 150px 0; border-top: 1px solid var(--border-color); }
+        footer { background: #000000; padding: 80px 0 40px; border-top: 1px solid var(--border-color); text-align: center; }
+        .footer-logo { height: 80px; margin-bottom: 30px; }
+        .footer-bottom { margin-top: 60px; color: #555; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
 
-        .cta-section h2 {
-            font-size: 3.5rem;
-            margin-bottom: 30px;
-        }
-
-        .cta-section p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            margin-bottom: 50px;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* --- Rodapé --- */
-        footer {
-            background: #000000;
-            padding: 80px 0 40px;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-        }
-
-        .footer-logo {
-            height: 80px;
-            margin-bottom: 30px;
-        }
-
-        .footer-bottom {
-            margin-top: 60px;
-            color: #555;
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            padding-top: 30px;
-        }
-
-        /* --- Responsividade --- */
         @media (max-width: 1024px) {
             .about-grid, .methodology-grid { grid-template-columns: 1fr; flex-direction: column; }
             .hero h1 { font-size: 3.5rem; }
-            .section-header h2 { font-size: 2.5rem; }
-        }
-
-        @media (max-width: 768px) {
-            nav { display: none; } /* Menu responsivo idealmente usaria um botão "hamburguer" aqui */
-            .btn-header { display: none; }
-            section { padding: 80px 0; }
-            .hero { text-align: center; }
-            .hero-content { margin: 0 auto; }
         }
     </style>
 </head>
@@ -387,14 +239,14 @@
                 <a href="#servicos">Serviços</a>
                 <a href="#projetos">Projetos</a>
             </nav>
-            <a href="https://wa.me/seunumero" class="btn-primary btn-header">Falar com Consultor</a>
+            <a href="https://wa.me/seunumero" class="btn-primary">Falar com Consultor</a>
         </div>
     </header>
 
     <section class="hero" id="inicio">
-        <div class="container hero-content">
+        <div class="container">
             <h1>Posicionamento Digital de <span class="highlight">Alto Padrão</span> para sua Empresa.</h1>
-            <p>A TAJO Digital 3F é uma agência completa focada em performance. Unimos web design avançado, identidade visual e estratégias de marketing para dominar o seu mercado.</p>
+            <p>A TAJO Digital 3F é uma agência focada em performance. Unimos web design avançado e estratégias de marketing para dominar o seu mercado.</p>
             <a href="https://wa.me/seunumero" class="btn-primary">Solicitar Orçamento Profissional</a>
         </div>
     </section>
@@ -404,8 +256,7 @@
             <div class="about-text">
                 <h2 style="color: var(--tajo-cyan); font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px;">A TAJO Digital 3F</h2>
                 <h3>Mais do que uma Agência, seus Parceiros de Crescimento.</h3>
-                <p>Nascemos com um objetivo claro: transformar ideias visionárias em resultados concretos na internet. Não entregamos apenas sites ou artes; entregamos ecossistemas digitais construídos para vender e consolidar marcas.</p>
-                <p>Nossa fundação é construída sobre três pilares inegociáveis que garantem o sucesso de cada cliente que confia em nossa equipe:</p>
+                <p>Nascemos com um objetivo claro: transformar ideias visionárias em resultados concretos na internet. Nossa fundação é construída sobre três pilares inegociáveis:</p>
             </div>
             
             <div class="pillars-grid">
@@ -413,7 +264,7 @@
                     <h4>🔥 FOCO</h4>
                     <p style="color: var(--text-muted);">Disciplina inabalável para executar estratégias com máxima qualidade e precisão técnica.</p>
                 </div>
-                <div class="pillar-card">
+                <div class="pillar-card" style="margin: 20px 0;">
                     <h4>💪 FORÇA</h4>
                     <p style="color: var(--text-muted);">Compromisso e energia dedicada para fazer cada projeto decolar, superando obstáculos e expectativas.</p>
                 </div>
@@ -429,29 +280,24 @@
         <div class="container">
             <div class="section-header">
                 <h2>Nossas <span class="highlight">Soluções Corporativas</span></h2>
-                <p>Atuamos de ponta a ponta para estruturar, posicionar e escalar a sua marca no ambiente digital com máxima eficiência.</p>
+                <p>Atuamos de ponta a ponta para estruturar e escalar a sua marca no ambiente digital.</p>
             </div>
             
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-icon">🌐</div>
                     <h3>Engenharia de Sites</h3>
-                    <p style="color: var(--text-muted);">Desenvolvimento de plataformas institucionais, landing pages de alta conversão e lojas virtuais com infraestrutura de ponta e layout moderno.</p>
+                    <p>Sites institucionais e landing pages de alta performance com design responsivo.</p>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">🎯</div>
                     <h3>Marketing Estratégico</h3>
-                    <p style="color: var(--text-muted);">Gestão avançada de presença online. Dominamos campanhas de tráfego, Instagram e WhatsApp para posicionar sua oferta na frente do cliente certo.</p>
+                    <p>Gestão avançada de tráfego e presença online para atrair o cliente certo.</p>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">🎨</div>
                     <h3>Design e Branding</h3>
-                    <p style="color: var(--text-muted);">Construção de identidades visuais impactantes, logomarcas premium e materiais que elevam a percepção de valor do seu negócio.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🚀</div>
-                    <h3>Escala de Vendas</h3>
-                    <p style="color: var(--text-muted);">Implementação de funis de vendas digitais e automações que transformam visitantes desconhecidos em clientes recorrentes.</p>
+                    <p>Identidades visuais impactantes que elevam a percepção de valor do seu negócio.</p>
                 </div>
             </div>
         </div>
@@ -461,51 +307,20 @@
         <div class="container">
             <div class="section-header">
                 <h2>Projetos em <span class="highlight">Destaque</span></h2>
-                <p>Nossa expertise abrange desde o desenvolvimento de software até o varejo e setor alimentício. Entregamos excelência independentemente do nicho.</p>
+                <p>Expertise que abrange diversos nichos com resultados tangíveis.</p>
             </div>
-            
             <div class="portfolio-grid">
                 <div class="portfolio-item">
                     <h4>OrçaPro</h4>
-                    <p style="color: var(--text-muted); font-size: 0.95rem;"><strong>Desafio:</strong> Criação de identidade visual e assets de interface para um gerador de orçamentos profissionais.</p>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;"><strong>Solução:</strong> Design moderno utilizando gradientes verdes específicos, focado em transmitir confiança corporativa e organização visual.</p>
+                    <p>Identidade visual corporativa focada em confiança e organização visual.</p>
                 </div>
                 <div class="portfolio-item">
                     <h4>Supermercado Schwambach</h4>
-                    <p style="color: var(--text-muted); font-size: 0.95rem;"><strong>Desafio:</strong> Modernização de materiais de marketing mantendo o legado e reconhecimento da marca local.</p>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;"><strong>Solução:</strong> Integração de branding utilizando a clássica letra "S" azul e o carrinho de compras em novas peças promocionais otimizadas.</p>
+                    <p>Modernização de marketing mantendo o reconhecimento da marca local.</p>
                 </div>
                 <div class="portfolio-item">
                     <h4>Lanchonete Schwambach</h4>
-                    <p style="color: var(--text-muted); font-size: 0.95rem;"><strong>Desafio:</strong> Estruturação da apresentação de produtos e cardápio de forma clara e atrativa.</p>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;"><strong>Solução:</strong> Desenvolvimento de um layout A5 vertical moderno e padronizado, otimizando a experiência do cliente e a operação do estabelecimento.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="metodologia">
-        <div class="container">
-            <div class="section-header">
-                <h2>Como Nós <span class="highlight">Trabalhamos</span></h2>
-                <p>Um processo transparente e focado em resultados tangíveis.</p>
-            </div>
-            
-            <div class="methodology-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h3 style="font-size: 1.3rem; margin-bottom: 15px;">Diagnóstico Digital</h3>
-                    <p style="color: var(--text-muted);">Avaliamos o estado atual da sua marca, identificamos gargalos e definimos os objetivos comerciais.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h3 style="font-size: 1.3rem; margin-bottom: 15px;">Planejamento Visual</h3>
-                    <p style="color: var(--text-muted);">Nossa equipe desenha a estratégia web e cria a identidade visual para alinhar comunicação e design.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h3 style="font-size: 1.3rem; margin-bottom: 15px;">Execução e Escala</h3>
-                    <p style="color: var(--text-muted);">Lançamos as campanhas e a plataforma no ar, monitorando métricas para escalar suas vendas com força e foco.</p>
+                    <p>Estruturação de cardápios e apresentação visual de produtos.</p>
                 </div>
             </div>
         </div>
@@ -514,16 +329,14 @@
     <section class="cta-section">
         <div class="container">
             <h2>Pronto para liderar o seu mercado?</h2>
-            <p>Pare de perder clientes por falta de um posicionamento profissional. Fale com nossos consultores e descubra como a TAJO Digital 3F vai transformar a sua presença na internet.</p>
-            <a href="https://wa.me/seunumero" class="btn-primary" style="padding: 22px 50px; font-size: 1.15rem; margin-top: 20px;">Quero Receber uma Proposta</a>
+            <p>Fale com nossos consultores e descubra como a TAJO Digital 3F vai transformar a sua presença na internet.</p>
+            <a href="https://wa.me/seunumero" class="btn-primary" style="padding: 22px 50px; font-size: 1.15rem;">Quero Receber uma Proposta</a>
         </div>
     </section>
 
     <footer>
         <div class="container">
             <img src="https://i.postimg.cc/gkK97nKv/Chat-GPT-Image-22-de-abr-de-2026-14-02-01-removebg-preview.png" alt="TAJO Digital 3F" class="footer-logo">
-            <p style="color: var(--text-muted); max-width: 400px; margin: 0 auto;">Excelência em desenvolvimento web, design estratégico e performance em marketing digital.</p>
-            
             <div class="footer-bottom">
                 <p>&copy; 2026 TAJO Digital 3F | Web & Marketing. Todos os direitos reservados.</p>
             </div>
