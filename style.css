@@ -113,3 +113,27 @@ nav a:hover { color: var(--cyan); }
     nav, .nav-btn { display: none; }
     .hero h1 { font-size: 2.5rem; }
 }
+
+/* Efeito de Desfocar os outros cards (Glass Focus) */
+
+/* Quando o mouse entra na área dos projetos... */
+.portfolio-grid:hover .portfolio-card {
+    filter: blur(4px); /* Desfoca todos os cards */
+    opacity: 0.5;      /* Diminui a opacidade de todos */
+    transform: scale(0.95); /* Diminui levemente o tamanho */
+}
+
+/* Mas o card que o mouse está EM CIMA fica nítido e ganha destaque */
+.portfolio-grid .portfolio-card:hover {
+    filter: blur(0);    /* Remove o desfoque */
+    opacity: 1;         /* Fica com brilho total */
+    transform: scale(1.05); /* Aumenta um pouco */
+    border-color: var(--cyan);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    z-index: 10;        /* Garante que ele fique por cima dos outros */
+}
+
+/* Transição suave para o efeito não ser brusco */
+.portfolio-card {
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
