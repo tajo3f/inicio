@@ -345,4 +345,38 @@ body:has(.portfolio-card:active) .section-title {
     z-index: 100;
 }
 
+/* ===========================
+   FOCO NOS VALORES (01 / 02 / 03)
+=========================== */
 
+/* Quando interagir com qualquer item de valores */
+body:has(.value-item:hover) .hero,
+body:has(.value-item:hover) .about-section,
+body:has(.value-item:hover) .portfolio-section,
+body:has(.value-item:hover) .testimonials-grid,
+body:has(.value-item:hover) .faq-container {
+    filter: blur(7px);
+    transition: filter 0.6s ease;
+}
+
+/* Mantém o card em foco totalmente nítido */
+.value-item:hover {
+    filter: blur(0) !important;
+    transform: scale(1.08) translateX(10px);
+    z-index: 50;
+    border-color: var(--cyan);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+}
+
+/* Desfoca os outros cards enquanto um está ativo */
+.values-container:has(.value-item:hover) .value-item {
+    filter: blur(4px);
+    opacity: 0.4;
+    transform: scale(0.96);
+}
+
+/* Exceção: o card em hover fica normal */
+.values-container .value-item:hover {
+    filter: blur(0);
+    opacity: 1;
+}
