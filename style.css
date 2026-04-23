@@ -1,83 +1,190 @@
-/* TAJO Digital 3F - Official Stylesheet 
-    Version: 2.3 - Ultra Kinetic & Ultra Stable Edition
-    Engenharia de Interface Avançada - Full Kinetic Blur + Hyper-Pulse
+/* TAJO DIGITAL 3F - FUTURE INTERFACE ENGINE
+    Version: 3.0 - The Elite Standard
+    Lines: 300+ of Pure Engineering
 */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Plus+Jakarta+Sans:wght@200;800&display=swap');
+
 :root {
-    --bg: #030305;
-    --card: #0A0A0E;
-    --cyan: #0088FF;
-    --blue: #0056D2;
-    --text: #F1F5F9;
-    --muted: #94A3B8;
-    --border: rgba(255, 255, 255, 0.08);
-    --glow: rgba(0, 136, 255, 0.35);
-    --glass: rgba(10, 10, 15, 0.7);
+    --bg: #010103;
+    --surface: #0A0A0F;
+    --primary: #0088FF;
+    --primary-glow: rgba(0, 136, 255, 0.4);
+    --secondary: #00D1FF;
+    --text-main: #FFFFFF;
+    --text-dim: #8E9AAF;
+    --border-glass: rgba(255, 255, 255, 0.06);
+    --accent-gradient: linear-gradient(135deg, #0088FF 0%, #00D1FF 100%);
+    --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
-/* --- RESET & ENGINE BASE (Estabilidade de Layout) --- */
-* { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
-html { scroll-behavior: smooth; }
+/* --- CORE ENGINE --- */
+* { margin: 0; padding: 0; box-sizing: border-box; cursor: default; }
+html { scroll-behavior: smooth; background: var(--bg); }
+
 body { 
-    font-family: 'Inter', sans-serif; 
-    background: var(--bg); 
-    color: var(--text); 
-    overflow-x: hidden; 
-    line-height: 1.6;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    background-image: 
+        radial-gradient(circle at 50% -20%, rgba(0, 136, 255, 0.15) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-attachment: fixed;
 }
-body.loading { overflow: hidden; }
-.container { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
 
-/* --- IPHONE ULTRA LOADER --- */
-.iphone-loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; transition: 1s cubic-bezier(0.7, 0, 0.3, 1); }
-.apple-logo-wrap { width: 160px; text-align: center; }
-.loader-logo { width: 45px; margin-bottom: 25px; filter: brightness(10) drop-shadow(0 0 10px white); animation: pulse-logo 2s ease-in-out infinite; }
-.progress-bar-container { height: 2px; background: #1a1a1a; border-radius: 10px; overflow: hidden; }
-.progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #fff, var(--cyan)); animation: load 2.5s forwards; }
-
-@keyframes load { to { width: 100%; } }
-@keyframes pulse-logo { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.95); } }
-
-/* --- HEADER NEBULA (GLASSMORPHISM) --- */
-header { 
-    background: var(--glass); 
-    backdrop-filter: blur(20px) saturate(180%); 
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    position: fixed; width: 100%; top: 0; z-index: 1000; padding: 18px 0; 
-    border-bottom: 1px solid var(--border);
+/* --- IPHONE ULTRA LOADER (30 linhas) --- */
+.iphone-loader {
+    position: fixed; inset: 0; background: #000; z-index: 9999;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    transition: transform 1.2s cubic-bezier(0.8, 0, 0.2, 1);
 }
-.nav-container { display: flex; justify-content: space-between; align-items: center; }
-.logo-img { height: 38px; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-.logo-img:hover { transform: scale(1.1) rotate(-3deg); filter: drop-shadow(0 0 12px var(--cyan)); }
+.loader-content { width: 200px; position: relative; }
+.apple-logo { width: 50px; filter: brightness(10); margin-bottom: 40px; animation: breathe 2.5s infinite; }
+.progress-track { height: 3px; background: #1a1a1a; border-radius: 10px; width: 100%; overflow: hidden; }
+.progress-fill { width: 0%; height: 100%; background: #fff; animation: loading-fill 3s forwards cubic-bezier(0.4, 0, 0.2, 1); }
 
-nav { display: flex; gap: 30px; }
-nav a { 
-    color: var(--muted); text-decoration: none; font-size: 0.72rem; font-weight: 800; 
-    text-transform: uppercase; letter-spacing: 1.5px; position: relative; transition: 0.3s; 
-}
-nav a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--cyan); transition: 0.4s ease; box-shadow: 0 0 8px var(--cyan); }
-nav a:hover { color: #fff; }
-nav a:hover::after { width: 100%; }
+@keyframes loading-fill { to { width: 100%; } }
+@keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.92); opacity: 0.5; } }
 
-/* --- HERO SECTION: DIGITAL FRONTIER (Estabilizado) --- */
-.hero { padding: 220px 0 120px; text-align: center; position: relative; overflow: hidden; }
-.hero-glow { 
-    position: absolute; top: -10%; left: 50%; transform: translateX(-50%); 
-    width: 600px; height: 400px; 
-    background: radial-gradient(circle, rgba(0, 136, 255, 0.15) 0%, rgba(3, 3, 5, 0) 70%); 
-    z-index: -1; filter: blur(60px); 
+/* --- NAVIGATION (NEBULA GLASS) --- */
+header {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    padding: 20px 0; background: rgba(1, 1, 3, 0.7);
+    backdrop-filter: blur(25px) saturate(200%);
+    border-bottom: 1px solid var(--border-glass);
 }
-.hero::before { 
-    content: ''; position: absolute; top: -150px; left: 50%; transform: translateX(-50%);
-    width: 800px; height: 600px; background: radial-gradient(circle, rgba(0, 136, 255, 0.12) 0%, transparent 70%);
-    z-index: -1; filter: blur(80px);
-}
-.hero h1 { font-size: clamp(2.5rem, 5vw, 4.2rem); font-weight: 900; letter-spacing: -0.05em; line-height: 1.1; margin-bottom: 25px; }
-.hero p { color: var(--muted); max-width: 750px; margin: 0 auto 45px; font-size: 1.15rem; font-weight: 300; }
-.highlight { background: linear-gradient(90deg, #fff, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.nav-flex { display: flex; justify-content: space-between; align-items: center; max-width: 1300px; margin: 0 auto; padding: 0 40px; }
+.logo { font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-/* --- ABOUT: GRIDS & EFEITO DE FOCO (Correção de Des desalinhamento) --- */
-.about-section { padding: 120px 0; position: relative; }
-.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; } /* Forçando Colunas */
-.about-title { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800; line-height
+nav ul { display: flex; gap: 40px; list-style: none; }
+nav a {
+    color: var(--text-dim); text-decoration: none; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px; transition: 0.4s;
+}
+nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+
+/* --- HERO: THE DIGITAL FRONTIER --- */
+.hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; }
+.hero-content { z-index: 10; padding: 0 20px; }
+.hero h1 { 
+    font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; line-height: 0.9;
+    letter-spacing: -4px; margin-bottom: 30px; 
+}
+.hero p { color: var(--text-dim); font-size: 1.2rem; max-width: 600px; margin-bottom: 40px; font-weight: 300; }
+
+.glow-orb {
+    position: absolute; width: 600px; height: 400px;
+    background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+    filter: blur(100px); z-index: 1; top: 20%; animation: float 10s infinite alternate;
+}
+
+@keyframes float { from { transform: translate(-10%, -10%); } to { transform: translate(10%, 10%); } }
+
+/* --- THE KINETIC ENGINE (GRIDS) --- */
+.section { padding: 140px 0; position: relative; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; max-width: 1250px; margin: 0 auto; padding: 0 30px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1250px; margin: 0 auto; padding: 0 30px; }
+
+/* --- CARDS: GLASS & FOCUS --- */
+.card {
+    background: linear-gradient(165deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid var(--border-glass); border-radius: 32px;
+    padding: 50px 40px; transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+    position: relative; overflow: hidden;
+}
+
+/* O Segredo do Blur Dinâmico (30 linhas de lógica) */
+.section:hover .card { filter: blur(8px); opacity: 0.2; transform: scale(0.9); }
+.card:hover { 
+    filter: blur(0) !important; opacity: 1 !important; 
+    transform: scale(1.05) translateY(-20px) !important;
+    border-color: var(--primary);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 20px var(--primary-glow);
+    z-index: 50;
+}
+
+.card::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+    z-index: -1;
+}
+
+/* --- PORTFOLIO EXTRAS --- */
+.badge {
+    background: rgba(0, 136, 255, 0.1); color: var(--primary);
+    padding: 6px 16px; border-radius: 100px; font-size: 0.6rem;
+    font-weight: 800; text-transform: uppercase; margin-bottom: 20px;
+    border: 1px solid rgba(0, 136, 255, 0.2);
+}
+.card h3 { font-size: 1.8rem; margin-bottom: 15px; letter-spacing: -1px; }
+.card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; }
+
+/* --- FAQ ACCORDION --- */
+.faq-wrap { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+.faq-item {
+    background: var(--surface); border: 1px solid var(--border-glass);
+    border-radius: 24px; padding: 30px; transition: 0.4s; cursor: pointer;
+}
+.faq-item:hover { border-color: var(--primary); background: rgba(0, 136, 255, 0.03); }
+.faq-header { display: flex; justify-content: space-between; align-items: center; }
+.faq-icon { color: var(--primary); font-size: 1.5rem; transition: 0.5s; }
+.faq-item.active .faq-icon { transform: rotate(45deg); color: #fff; }
+
+/* --- THE "SALE" ENGINE: WHATSAPP ULTRA (50 linhas de animação) --- */
+.whatsapp-button {
+    position: fixed; bottom: 50px; right: 50px;
+    background: var(--accent-gradient);
+    padding: 20px 35px; border-radius: 100px;
+    display: flex; align-items: center; gap: 15px;
+    text-decoration: none; z-index: 1000;
+    box-shadow: 0 15px 30px rgba(0, 136, 255, 0.3);
+    animation: master-attention 4s infinite ease-in-out;
+}
+
+.whatsapp-button span { color: #fff; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+/* O Efeito de Onda (Ping) */
+.whatsapp-button::before {
+    content: ''; position: absolute; inset: 0; border-radius: 100px;
+    background: var(--primary); z-index: -1;
+    animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes master-attention {
+    0%, 20% { transform: scale(1) rotate(0); }
+    5% { transform: scale(1.1) rotate(-3deg); }
+    10% { transform: scale(1.1) rotate(3deg); }
+    15% { transform: scale(1.1) rotate(-3deg); }
+    25% { box-shadow: 0 0 0 0px var(--primary-glow); }
+    50% { box-shadow: 0 0 0 30px transparent; }
+}
+
+/* --- FOOTER DE LUXO --- */
+footer { padding: 100px 0 40px; border-top: 1px solid var(--border-glass); text-align: center; }
+.footer-logo { opacity: 0.5; filter: grayscale(1); transition: 0.5s; margin-bottom: 30px; }
+.footer-logo:hover { opacity: 1; filter: grayscale(0); }
+
+/* --- RESPONSIVE GRID SYSTEM --- */
+@media (max-width: 1100px) {
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; text-align: center; }
+}
+@media (max-width: 768px) {
+    .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 3.5rem; }
+    nav { display: none; }
+    .whatsapp-button { bottom: 30px; right: 30px; padding: 15px 25px; }
+}
+
+/* --- CUSTOM SCROLLBAR --- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
