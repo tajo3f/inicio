@@ -1,49 +1,80 @@
-const html = document.documentElement;
-const themeToggle = document.getElementById("themeToggle");
-const themeIcon = document.querySelector(".theme-icon");
-const menuToggle = document.getElementById("menuToggle");
-const navLinks = document.getElementById("navLinks");
-const contactForm = document.getElementById("contactForm");
+// ==========================================
+// TAJO DIGITAL 3F - SCRIPTS CORPORATIVOS 2026
+// ==========================================
 
-const savedTheme = localStorage.getItem("tajo-theme");
-if (savedTheme) {
-  html.setAttribute("data-theme", savedTheme);
-  themeIcon.textContent = savedTheme === "dark" ? "🌙" : "☀️";
+// 1. CONTROLE DO MENU MOBILE (HAMBÚRGUER)
+const menuBtn = document.getElementById('menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+
+if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // Fecha o menu mobile automaticamente ao clicar em qualquer link dele
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
 }
 
-themeToggle.addEventListener("click", () => {
-  const current = html.getAttribute("data-theme");
-  const next = current === "dark" ? "light" : "dark";
-  html.setAttribute("data-theme", next);
-  localStorage.setItem("tajo-theme", next);
-  themeIcon.textContent = next === "dark" ? "🌙" : "☀️";
-});
+// 2. CONTROLE DO MOTO ESCURO / CLARO (DARK MODE)
+const htmlElement = document.documentElement;
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeToggleIcon = document.getElementById('theme-toggle-icon');
+const themeToggleBtnMobile = document.getElementById('theme-toggle-mobile');
+const themeToggleIconMobile = document.getElementById('theme-toggle-icon-mobile');
 
-menuToggle.addEventListener("click", () => {
-  navLinks.classList.toggle("open");
-});
-
-document.querySelectorAll(".nav-links a").forEach(link => {
-  link.addEventListener("click", () => navLinks.classList.remove("open"));
-});
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("visible");
+function toggleDarkMode() {
+    if (htmlElement.classList.contains('dark')) {
+        htmlElement.classList.remove('dark');
+        htmlElement.classList.add('light');
+        if (themeToggleIcon) themeToggleIcon.className = 'fas fa-sun text-amber-500';
+        if (themeToggleIconMobile) themeToggleIconMobile.className = 'fas fa-sun text-amber-500';
+        localStorage.setItem('theme', 'light');
+    } else {
+        htmlElement.classList.remove('light');
+        htmlElement.classList.add('dark');
+        if (themeToggleIcon) themeToggleIcon.className = 'fas fa-moon';
+        if (themeToggleIconMobile) themeToggleIconMobile.className = 'fas fa-moon';
+        localStorage.setItem('theme', 'dark');
     }
-  });
-}, { threshold: 0.12 });
+}
 
-document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleDarkMode);
+if (themeToggleBtnMobile) themeToggleBtnMobile.addEventListener('click', toggleDarkMode);
 
-contactForm.addEventListener("submit", (event) => {
-  event.preventDefault();
+// Verificação inicial de preferência salva pelo usuário
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light') {
+    htmlElement.classList.remove('dark');
+    htmlElement.classList.add('light');
+    if (themeToggleIcon) themeToggleIcon.className = 'fas fa-sun text-amber-500';
+    if (themeToggleIconMobile) themeToggleIconMobile.className = 'fas fa-sun text-amber-500';
+}
 
-  const name = document.getElementById("name").value.trim();
-  const service = document.getElementById("service").value;
-  const message = document.getElementById("message").value.trim();
+// 3. SISTEMA DE ACORDION DO FAQ (PERGUNTAS FREQUENTES)
+const faqButtons = document.querySelectorAll('.faq-btn');
 
-  const text = `Olá! Vim pelo site da TAJO Digital 3F.%0A%0ANome: ${encodeURIComponent(name)}%0AServiço: ${encodeURIComponent(service)}%0AMensagem: ${encodeURIComponent(message)}`;
-  window.open(`https://wa.me/5527999639610?text=${text}`, "_blank");
+faqButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        const icon = btn.querySelector('i');
+        
+        // Fecha outros itens do FAQ que porventura estejam abertos (Efeito Sanfona)
+        document.querySelectorAll('.faq-content').forEach(el => {
+            if (el !== content) el.style.maxHeight = null;
+        });
+        document.querySelectorAll('.faq-btn i').forEach(i => {
+            if (i !== icon) i.classList.remove('rotate-180');
+        });
+
+        // Abre ou fecha o item atual clicado
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            icon.classList.remove('rotate-180');
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.classList.add('rotate-180');
+        }
+    });
 });
