@@ -1,0 +1,13 @@
+{
+  "name": "TAJO Digital 3F",
+  "short_name": "TAJO",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f9ff",
+  "theme_color": "#1463ff",
+  "description": "Design, sites, automação, sistemas e IA para empresas.",
+  "icons": [
+    {"src": "/favicon.png", "sizes": "64x64", "type": "image/png"},
+    {"src": "/logo.png", "sizes": "500x500", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

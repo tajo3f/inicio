@@ -1,0 +1,225 @@
+from __future__ import annotations
+
+import os
+import re
+import sqlite3
+import time
+from datetime import datetime, timezone
+from pathlib import Path
+
+from flask import Flask, jsonify, request, send_from_directory
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+BASE_DIR = Path(__file__).resolve().parent
+DATABASE_PATH = Path(os.getenv("DATABASE_PATH", BASE_DIR / "data" / "community.db"))
+SITE_URL = os.getenv("SITE_URL", "http://tajodigital3f.com.br/").rstrip("/") + "/"
+ADMIN_KEY = os.getenv("ADMIN_KEY", "")
+MAX_MESSAGES = 1000
+ONLINE_WINDOW_SECONDS = 45
+MESSAGE_COOLDOWN_SECONDS = 7
+SESSION_RE = re.compile(r"^[A-Za-z0-9_-]{8,100}$")
+
+app = Flask(__name__, static_folder=None)
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
+
+def utc_iso(timestamp: int | float) -> str:
+    return datetime.fromtimestamp(timestamp, tz=timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def get_db() -> sqlite3.Connection:
+    DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(DATABASE_PATH, timeout=5)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA foreign_keys=ON")
+    return conn
+
+
+def init_db() -> None:
+    with get_db() as conn:
+        conn.executescript(
+            """
+            CREATE TABLE IF NOT EXISTS presence (
+                session_id TEXT PRIMARY KEY,
+                last_seen INTEGER NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                message TEXT NOT NULL,
+                created_at INTEGER NOT NULL
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_presence_last_seen ON presence(last_seen);
+            CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at);
+            CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id, created_at);
+            """
+        )
+
+
+def valid_session(value: object) -> str | None:
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    return value if SESSION_RE.fullmatch(value) else None
+
+
+def normalize_text(value: object, max_len: int) -> str:
+    if not isinstance(value, str):
+        return ""
+    value = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", value)
+    return value.strip()[:max_len]
+
+
+def prune_presence(conn: sqlite3.Connection, now: int) -> int:
+    cutoff = now - ONLINE_WINDOW_SECONDS
+    conn.execute("DELETE FROM presence WHERE last_seen < ?", (cutoff - ONLINE_WINDOW_SECONDS * 4,))
+    row = conn.execute("SELECT COUNT(*) AS total FROM presence WHERE last_seen >= ?", (cutoff,)).fetchone()
+    return int(row["total"])
+
+
+@app.after_request
+def security_headers(response):
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    response.headers.setdefault(
+        "Content-Security-Policy",
+        "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self' 'unsafe-inline'; "
+        "connect-src 'self'; base-uri 'self'; form-action 'self' https://wa.me; frame-ancestors 'self'"
+    )
+    return response
+
+
+@app.get("/api/health")
+def health():
+    return jsonify({"ok": True, "site": "TAJO Digital 3F", "site_url": SITE_URL})
+
+
+@app.route("/api/presence", methods=["GET", "POST"])
+def presence():
+    now = int(time.time())
+    with get_db() as conn:
+        if request.method == "POST":
+            payload = request.get_json(silent=True) or {}
+            session_id = valid_session(payload.get("session_id"))
+            if not session_id:
+                return jsonify({"error": "Sessão inválida."}), 400
+            conn.execute(
+                "INSERT INTO presence(session_id, last_seen) VALUES(?, ?) "
+                "ON CONFLICT(session_id) DO UPDATE SET last_seen=excluded.last_seen",
+                (session_id, now),
+            )
+        total = prune_presence(conn, now)
+    return jsonify({"online": total, "window_seconds": ONLINE_WINDOW_SECONDS})
+
+
+@app.get("/api/community/messages")
+def get_messages():
+    try:
+        limit = max(1, min(int(request.args.get("limit", "50")), 100))
+    except ValueError:
+        limit = 50
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT id, session_id, name, message, created_at FROM messages ORDER BY id DESC LIMIT ?",
+            (limit,),
+        ).fetchall()
+    messages = [
+        {
+            "id": row["id"],
+            "session_id": row["session_id"],
+            "name": row["name"],
+            "message": row["message"],
+            "created_at": utc_iso(row["created_at"]),
+        }
+        for row in reversed(rows)
+    ]
+    return jsonify({"messages": messages})
+
+
+@app.post("/api/community/messages")
+def post_message():
+    payload = request.get_json(silent=True) or {}
+    session_id = valid_session(payload.get("session_id"))
+    name = normalize_text(payload.get("name"), 32)
+    message = normalize_text(payload.get("message"), 280)
+
+    if not session_id:
+        return jsonify({"error": "Sessão inválida. Recarregue a página."}), 400
+    if len(name) < 2:
+        return jsonify({"error": "Informe um nome com pelo menos 2 caracteres."}), 400
+    if len(message) < 2:
+        return jsonify({"error": "Escreva uma mensagem com pelo menos 2 caracteres."}), 400
+
+    now = int(time.time())
+    with get_db() as conn:
+        last = conn.execute(
+            "SELECT created_at FROM messages WHERE session_id = ? ORDER BY id DESC LIMIT 1",
+            (session_id,),
+        ).fetchone()
+        if last and now - int(last["created_at"]) < MESSAGE_COOLDOWN_SECONDS:
+            wait = MESSAGE_COOLDOWN_SECONDS - (now - int(last["created_at"]))
+            return jsonify({"error": f"Aguarde {wait}s antes de publicar outra mensagem."}), 429
+
+        cursor = conn.execute(
+            "INSERT INTO messages(session_id, name, message, created_at) VALUES(?, ?, ?, ?)",
+            (session_id, name, message, now),
+        )
+        conn.execute(
+            "DELETE FROM messages WHERE id NOT IN (SELECT id FROM messages ORDER BY id DESC LIMIT ?)",
+            (MAX_MESSAGES,),
+        )
+        conn.execute(
+            "INSERT INTO presence(session_id, last_seen) VALUES(?, ?) "
+            "ON CONFLICT(session_id) DO UPDATE SET last_seen=excluded.last_seen",
+            (session_id, now),
+        )
+        message_id = cursor.lastrowid
+
+    return jsonify({"ok": True, "id": message_id, "created_at": utc_iso(now)}), 201
+
+
+@app.delete("/api/community/messages/<int:message_id>")
+def delete_message(message_id: int):
+    if not ADMIN_KEY:
+        return jsonify({"error": "Moderação remota não configurada."}), 503
+    if request.headers.get("X-Admin-Key", "") != ADMIN_KEY:
+        return jsonify({"error": "Não autorizado."}), 401
+    with get_db() as conn:
+        cursor = conn.execute("DELETE FROM messages WHERE id = ?", (message_id,))
+    if cursor.rowcount == 0:
+        return jsonify({"error": "Mensagem não encontrada."}), 404
+    return jsonify({"ok": True})
+
+
+@app.get("/")
+def index():
+    return send_from_directory(BASE_DIR, "index.html")
+
+
+@app.get("/<path:path>")
+def static_files(path: str):
+    safe_files = {
+        "index.html", "style.css", "script.js", "logo.png", "logo.webp", "favicon.png",
+        "founder.webp", "1.webp", "2.webp", "3.webp", "4.webp", "5.webp",
+        "robots.txt", "sitemap.xml", "manifest.webmanifest"
+    }
+    if path in safe_files:
+        response = send_from_directory(BASE_DIR, path)
+        if path.endswith((".webp", ".png", ".css", ".js")):
+            response.headers["Cache-Control"] = "public, max-age=604800"
+        return response
+    return send_from_directory(BASE_DIR, "index.html")
+
+
+init_db()
+
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", "5000"))
+    app.run(host="0.0.0.0", port=port, debug=os.getenv("FLASK_DEBUG") == "1")

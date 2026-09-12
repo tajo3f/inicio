@@ -1,38 +1,138 @@
-# 🚀 Tajo Digital 3F - Página de Manutenção Estratégica
+# TAJO Digital 3F — Site institucional + Comunidade
 
-![Versão](https://img.shields.io/badge/Vers%C3%A3o-1.0.0-blueviolet)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
-![UI](https://img.shields.io/badge/UI/UX-Cyberpunk%20%2F%20Glassmorphism-ff0033)
+Versão profissional do site da TAJO Digital 3F, criada em HTML, CSS e JavaScript com backend Flask + SQLite apenas para os recursos que realmente precisam de servidor.
 
-Uma página de destino (*Landing Page*) de alta performance desenvolvida para a **Tajo Digital 3F**, anunciando uma nova fase da empresa voltada para soluções de Landing Pages de alta conversão e infraestrutura avançada de streaming. A página funciona como um aviso de manutenção estratégica, mantendo os canais de contato ativos.
+## O que esta versão inclui
 
----
+- identidade clara e profissional por padrão;
+- tema escuro opcional, salvo no navegador;
+- apresentação completa dos serviços atuais da TAJO;
+- filtros de serviços;
+- planos de conteúdo;
+- portfólio;
+- formulário que abre o WhatsApp com briefing organizado;
+- SEO técnico, Schema.org, Open Graph, robots.txt e sitemap.xml;
+- responsividade para celular, tablet e desktop;
+- acessibilidade básica e suporte a `prefers-reduced-motion`;
+- contador real de pessoas online;
+- comunidade com mensagens públicas;
+- proteção contra HTML/XSS no front-end;
+- limite de tamanho, cooldown e validação das mensagens no backend;
+- moderação por endpoint protegido com `ADMIN_KEY`.
 
-## ✨ Características do Projeto
+## Rodar localmente
 
-O design foi concebido com uma estética **Futurista / Cyberpunk Cinematográfica**, utilizando técnicas avançadas de estilização CSS puro, sem necessidade de frameworks externos.
+### 1. Instalar Python 3.10+
 
-* **Glassmorphic Master Card:** Card central com efeito de vidro fosco (`backdrop-filter`) e sombras neon sobrepostas.
-* **Ambient Engine:** Sistema de iluminação assíncrona de fundo com esferas de plasma em movimento orbital cíclico.
-* **Cyber Mesh:** Grid cibernético de fundo imitando interfaces HUD de ficção científica.
-* **Efeito Laser (Scanline):** Uma linha de varredura que escaneia o card principal continuamente.
-* **Responsividade Extrema:** Totalmente otimizado para dispositivos móveis, tablets e desktops de ultra resolução através de propriedades modernas como `clamp()`.
-* **Acessibilidade e SEO:** Tags meta Open Graph configuradas para compartilhamento em redes sociais e indexação limpa.
+No Windows, marque a opção **Add Python to PATH** durante a instalação.
 
----
+### 2. Criar ambiente virtual
 
-## 🛠️ Tecnologias Utilizadas
+```bash
+python -m venv .venv
+```
 
-* **HTML5 Semântico:** Estruturação limpa utilizando as tags adequadas (`<main>`, `<header>`, `<footer>`).
-* **CSS3 Avançado:** * Variáveis nativas (`:root`) para gerenciamento de paleta de cores.
-    * Animações complexas via `@keyframes` para os efeitos de float, scanline e pulse do status.
-    * Filtros de desfoque (`blur`) e mascaramento de background.
-* **Vetores (SVG):** Ícones integrados nativamente para garantir carregamento instantâneo e sem perda de resolução.
-* **Google Fonts:** Integração da fonte *Montserrat* em variações de alta densidade (Black/Italic).
+Windows:
 
----
+```bash
+.venv\Scripts\activate
+```
 
-## 📁 Estrutura do Arquivo
+### 3. Instalar dependências
 
-O projeto foi construído em um **único arquivo estrutural** (`index.html`) para priorizar a performance de carregamento (Zero requisições externas de folhas de estilo):
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Iniciar
+
+```bash
+python app.py
+```
+
+Abra:
+
+```text
+http://127.0.0.1:5000
+```
+
+> Se você abrir apenas o `index.html` com duplo clique, o design, tema, filtros e WhatsApp funcionam. O contador de pessoas online e a comunidade precisam do `app.py` rodando.
+
+## Banco de dados
+
+O arquivo é criado automaticamente em:
+
+```text
+data/community.db
+```
+
+Use `DATABASE_PATH` para alterar esse local em produção.
+
+## Domínio configurado
+
+O site já usa como endereço principal:
+
+```text
+http://tajodigital3f.com.br/
+```
+
+Esse domínio está presente em canonical, Open Graph, Schema.org, sitemap, robots e variável `SITE_URL` de exemplo.
+
+**Importante:** o código não consegue alterar o DNS do Registro.br sozinho. Depois de publicar o Flask em uma hospedagem compatível, aponte o domínio `tajodigital3f.com.br` para o endereço informado pela hospedagem. Quando o certificado SSL estiver ativo, troque as referências de `http://` para `https://` para ficar com a configuração ideal de produção.
+
+## Produção
+
+A comunidade usa Flask + SQLite, então publique em uma hospedagem que mantenha o processo Python e tenha armazenamento persistente. Exemplos: VPS, Railway, Render com disco persistente ou hospedagem Python equivalente.
+
+Início recomendado em produção:
+
+```bash
+gunicorn -w 2 -b 0.0.0.0:$PORT app:app
+```
+
+### Variáveis de ambiente
+
+Copie `.env.example` como referência e configure as variáveis no painel da hospedagem:
+
+- `SITE_URL`
+- `DATABASE_PATH`
+- `ADMIN_KEY`
+- `HASH_SALT`
+- `PORT`
+
+Não publique sua `ADMIN_KEY` real no GitHub.
+
+## Moderação
+
+Para apagar uma mensagem, envie uma requisição `DELETE` para:
+
+```text
+/api/community/messages/ID
+```
+
+com o cabeçalho:
+
+```text
+X-Admin-Key: SUA_CHAVE
+```
+
+## Estrutura
+
+```text
+/
+├── index.html
+├── style.css
+├── script.js
+├── app.py
+├── requirements.txt
+├── Procfile
+├── .env.example
+├── robots.txt
+├── sitemap.xml
+├── manifest.webmanifest
+├── logo.png
+├── logo.webp
+├── favicon.png
+├── founder.webp
+└── 1.webp ... 5.webp
+```
