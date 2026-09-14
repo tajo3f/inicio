@@ -1,32 +1,33 @@
-# TAJO Digital 3F — Site institucional + Comunidade
+# TAJO Digital 3F — Site 2026
 
-Versão profissional do site da TAJO Digital 3F, criada em HTML, CSS e JavaScript com backend Flask + SQLite apenas para os recursos que realmente precisam de servidor.
+Site institucional/comercial da TAJO Digital 3F, com HTML5, CSS3, JavaScript Vanilla e Flask apenas para a comunidade/presença online. A versão foi preparada para ser simples de manter, rápida e compatível com a detecção automática de Flask do Vercel.
 
-## O que esta versão inclui
+## Destaques desta versão
 
-- identidade clara e profissional por padrão;
-- tema escuro opcional, salvo no navegador;
-- apresentação completa dos serviços atuais da TAJO;
-- filtros de serviços;
-- planos de conteúdo;
-- portfólio;
-- formulário que abre o WhatsApp com briefing organizado;
-- SEO técnico, Schema.org, Open Graph, robots.txt e sitemap.xml;
-- responsividade para celular, tablet e desktop;
-- acessibilidade básica e suporte a `prefers-reduced-motion`;
-- contador real de pessoas online;
-- comunidade com mensagens públicas;
-- proteção contra HTML/XSS no front-end;
-- limite de tamanho, cooldown e validação das mensagens no backend;
-- moderação por endpoint protegido com `ADMIN_KEY`.
+- nova área **TAJO Prompt Studio 3.0 Beta**;
+- CTA para a página oficial de vendas;
+- CTA oficial para afiliação na Hotmart;
+- CTA para o grupo oficial de vendedores no WhatsApp;
+- preview interativo do Prompt Studio;
+- área comercial de **Visualizers** com planos de R$ 89, R$ 179 e R$ 449;
+- plano de R$ 179 destacado como opção de melhor equilíbrio;
+- UI/UX refinado, tema claro/escuro e microinterações;
+- scroll personalizado e indicador de progresso;
+- botão voltar ao topo;
+- efeitos de spotlight e ripple sem dependências externas pesadas;
+- filtros de serviços, planos, portfólio, comunidade e formulário via WhatsApp;
+- SEO técnico, Schema.org, Open Graph, sitemap, robots e manifest;
+- layout mobile-first e acessibilidade com `prefers-reduced-motion`;
+- headers de segurança e validações no backend;
+- pasta `public/` com os assets estáticos para o CDN do Vercel.
+
+## Links comerciais configurados
+
+- Página de vendas: https://tajopromptstudio.vercel.app/
+- Afiliação Hotmart: https://affiliate.hotmart.com/affiliate-recruiting/view/3363T107484199
+- Grupo oficial de vendedores: https://chat.whatsapp.com/L1pNnZviFMaJixYO1tDHlQ?s=cl&p=i&mlu=4&ilr=4
 
 ## Rodar localmente
-
-### 1. Instalar Python 3.10+
-
-No Windows, marque a opção **Add Python to PATH** durante a instalação.
-
-### 2. Criar ambiente virtual
 
 ```bash
 python -m venv .venv
@@ -36,85 +37,23 @@ Windows:
 
 ```bash
 .venv\Scripts\activate
-```
-
-### 3. Instalar dependências
-
-```bash
 pip install -r requirements.txt
-```
-
-### 4. Iniciar
-
-```bash
 python app.py
 ```
 
-Abra:
+Abra `http://127.0.0.1:5000`.
 
-```text
-http://127.0.0.1:5000
-```
+## Publicar no Vercel
 
-> Se você abrir apenas o `index.html` com duplo clique, o design, tema, filtros e WhatsApp funcionam. O contador de pessoas online e a comunidade precisam do `app.py` rodando.
+1. Suba esta pasta em um repositório GitHub.
+2. No Vercel, clique em **Add New > Project** e importe o repositório.
+3. O Vercel detecta automaticamente o `app.py` com a instância Flask chamada `app`; não é necessário criar Build Command nem Output Directory.
+4. Em **Environment Variables**, você pode definir `SITE_URL=https://tajodigital3f.com.br/` e `ADMIN_KEY` se for usar a moderação da comunidade.
+5. Faça o deploy.
 
-## Banco de dados
+### Observação sobre a comunidade no Vercel
 
-O arquivo é criado automaticamente em:
-
-```text
-data/community.db
-```
-
-Use `DATABASE_PATH` para alterar esse local em produção.
-
-## Domínio configurado
-
-O site já usa como endereço principal:
-
-```text
-http://tajodigital3f.com.br/
-```
-
-Esse domínio está presente em canonical, Open Graph, Schema.org, sitemap, robots e variável `SITE_URL` de exemplo.
-
-**Importante:** o código não consegue alterar o DNS do Registro.br sozinho. Depois de publicar o Flask em uma hospedagem compatível, aponte o domínio `tajodigital3f.com.br` para o endereço informado pela hospedagem. Quando o certificado SSL estiver ativo, troque as referências de `http://` para `https://` para ficar com a configuração ideal de produção.
-
-## Produção
-
-A comunidade usa Flask + SQLite, então publique em uma hospedagem que mantenha o processo Python e tenha armazenamento persistente. Exemplos: VPS, Railway, Render com disco persistente ou hospedagem Python equivalente.
-
-Início recomendado em produção:
-
-```bash
-gunicorn -w 2 -b 0.0.0.0:$PORT app:app
-```
-
-### Variáveis de ambiente
-
-Copie `.env.example` como referência e configure as variáveis no painel da hospedagem:
-
-- `SITE_URL`
-- `DATABASE_PATH`
-- `ADMIN_KEY`
-- `HASH_SALT`
-- `PORT`
-
-Não publique sua `ADMIN_KEY` real no GitHub.
-
-## Moderação
-
-Para apagar uma mensagem, envie uma requisição `DELETE` para:
-
-```text
-/api/community/messages/ID
-```
-
-com o cabeçalho:
-
-```text
-X-Admin-Key: SUA_CHAVE
-```
+O Vercel usa funções serverless e não oferece disco SQLite persistente. Nesta versão, quando a variável `VERCEL` estiver presente, o banco usa `/tmp/tajo-community.db` para evitar erro de gravação. Isso mantém o recurso funcional durante a vida da instância, mas as mensagens podem reiniciar em novos cold starts. Para comunidade realmente persistente, conecte depois um banco externo (ex.: PostgreSQL/Supabase) ou hospede o Flask em ambiente com disco persistente.
 
 ## Estrutura
 
@@ -125,6 +64,9 @@ X-Admin-Key: SUA_CHAVE
 ├── script.js
 ├── app.py
 ├── requirements.txt
+├── .python-version
+├── .vercelignore
+├── public/
 ├── Procfile
 ├── .env.example
 ├── robots.txt
@@ -136,3 +78,15 @@ X-Admin-Key: SUA_CHAVE
 ├── founder.webp
 └── 1.webp ... 5.webp
 ```
+
+## Edição rápida
+
+- **Prompt Studio:** procure por `id="prompt-studio"` em `index.html`.
+- **Visualizers:** procure por `id="visualizers"`.
+- **Cores:** altere as variáveis no início de `style.css`.
+- **WhatsApp de orçamento:** procure por `5527999639610`.
+- **Links de afiliados:** estão concentrados na seção Prompt Studio e no footer.
+
+## Segurança
+
+Não publique `ADMIN_KEY` real no GitHub. Use variáveis de ambiente no painel da hospedagem.

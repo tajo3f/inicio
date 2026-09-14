@@ -11,8 +11,9 @@ from flask import Flask, jsonify, request, send_from_directory
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = Path(os.getenv("DATABASE_PATH", BASE_DIR / "data" / "community.db"))
-SITE_URL = os.getenv("SITE_URL", "http://tajodigital3f.com.br/").rstrip("/") + "/"
+DEFAULT_DATABASE_PATH = Path("/tmp/tajo-community.db") if os.getenv("VERCEL") else BASE_DIR / "data" / "community.db"
+DATABASE_PATH = Path(os.getenv("DATABASE_PATH", DEFAULT_DATABASE_PATH))
+SITE_URL = os.getenv("SITE_URL", "https://tajodigital3f.com.br/").rstrip("/") + "/"
 ADMIN_KEY = os.getenv("ADMIN_KEY", "")
 MAX_MESSAGES = 1000
 ONLINE_WINDOW_SECONDS = 45
@@ -88,6 +89,8 @@ def security_headers(response):
     response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
     response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
     response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    if request.is_secure:
+        response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
     response.headers.setdefault(
         "Content-Security-Policy",
         "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self' 'unsafe-inline'; "
